@@ -15,6 +15,8 @@ sub daemonize {
     # clear umask
     umask 0;
 
+    chdir '/' or die "can't chdir: $!";
+
     open STDIN,  '+>/dev/null';
     open STDOUT, '+>&STDIN';
     open STDERR, '+>&STDIN';
