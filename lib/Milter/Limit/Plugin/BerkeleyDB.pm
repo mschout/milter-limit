@@ -21,12 +21,15 @@ sub _new_instance {
 sub _init {
     my $self = shift;
 
+    my $conf = Milter::Limit::Config->section('driver');
+
     my $env = BerkeleyDB::Env->new(
+        -Home     => $$conf{home},
         -Flags => DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB);
 
     my $db = BerkeleyDB::Hash->new(
-        -Filename => '/var/db/milter-limit/stats.db',
-        -Mode     => 0644,
+        -Filename => $$conf{file},
+        -Mode     => $$conf{mode} || 0644,
         -Env      => $env,
         -Flags    => DB_CREATE) or die "failed to open BerkeleyDB";
 
@@ -36,8 +39,9 @@ sub _init {
 sub query {
     my ($self, $from) = @_;
 
-    my $val;
+    my $conf = Milter::Limit::Config->global;
 
+    my $val;
     $self->_db->db_get($from, $val);
 
     unless (defined $val) {
@@ -48,7 +52,7 @@ sub query {
     my ($start, $count) = split ':', $val;
 
     # reset counter if it is expired
-    if ($start < time - 3600 * 24) {
+    if ($start < time - $$conf{expire}) {
         $count = 0;
         $start = time;
     }
