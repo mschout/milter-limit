@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use strict;
+use FindBin qw($RealBin);
+use lib "$RealBin/../lib";
+use Milter::Limit;
+use Milter::Limit::Util;
+
+main();
+
+sub main {
+    my $milter = Milter::Limit->instance('BerkeleyDB');
+    $milter->register;
+    $milter->main;
+}
