@@ -3,13 +3,30 @@
 use strict;
 use FindBin qw($RealBin);
 use lib "$RealBin/../lib";
+
+use Getopt::Std;
 use Milter::Limit;
 use Milter::Limit::Util;
+use Proc::PID::File;
+
+my %opts = (
+    d => 0,     # debugging mode
+);
+
+getopts('d', \%opts);
 
 main();
 
 sub main {
+    Milter::Limit::Util::daemonize() unless $opts{d};
+
+    die "already running" if Proc::PID::File->running;
+
+    $0 = 'milter-limit';
+
     my $milter = Milter::Limit->instance('BerkeleyDB');
+
+    # XXX drop privs
     $milter->register;
     $milter->main;
 }
