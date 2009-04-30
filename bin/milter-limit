@@ -4,25 +4,28 @@ use strict;
 use FindBin qw($RealBin);
 use lib "$RealBin/../lib";
 
-use Getopt::Std;
+use Getopt::Long;
 use Milter::Limit;
 use Milter::Limit::Util;
 use Proc::PID::File;
 
 my %opts = (
-    d => 0,     # debugging mode
+    debug  => 0,                            # debugging mode
+    config => '/etc/mail/milter-limit.conf' # config file
 );
 
-getopts('d', \%opts);
+GetOptions(\%opts, 'debug|d', 'config|c=s');
 
 main();
 
 sub main {
-    Milter::Limit::Util::daemonize() unless $opts{d};
+    my $config = Milter::Limit::Config->instance($opts{config});
+
+    Milter::Limit::Util::daemonize() unless $opts{debug};
 
     die "already running" if Proc::PID::File->running;
 
-    $0 = 'milter-limit';
+    $0 = $$config{name} || 'milter-limit';
 
     my $milter = Milter::Limit->instance('BerkeleyDB');
 
