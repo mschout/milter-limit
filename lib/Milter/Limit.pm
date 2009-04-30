@@ -3,6 +3,7 @@ package Milter::Limit;
 use strict;
 use base qw(Class::Accessor Class::Singleton);
 use Milter::Limit::Config;
+use Milter::Limit::Log;
 use Sendmail::PMilter ':all';
 use Sys::Syslog ();
 use Carp;
@@ -17,6 +18,7 @@ sub _new_instance {
     my $self = $class->SUPER::_new_instance();
 
     $self->init($driver);
+
     return $self;
 }
 
@@ -38,6 +40,7 @@ sub _init_log {
     $$conf{facility} ||= 'mail';
 
     Sys::Syslog::openlog($$conf{identity}, $$conf{options}, $$conf{facility});
+    info("syslog initialized");
 
     $SIG{__WARN__} = sub {
         Sys::Syslog::syslog('warning', "warning: ".join('', @_));
@@ -58,6 +61,7 @@ sub _init_driver {
     if ($@) {
         die "failed to load $driver_class: $@\n";
     }
+    debug("loaded driver $driver");
 
     $self->driver($driver_class->instance);
 }
@@ -68,14 +72,18 @@ sub register {
 
     my $milter = $self->milter;
 
-    $milter->auto_setconn($self->config->global->{name})
+    my $conf = $self->config->global;
+
+    $milter->auto_setconn($$conf{name})
         or croak "auto_setconn failed";
 
     my %callbacks = (
         envfrom => \&_envfrom_callback
     );
 
-    $milter->register($self->config->global->{name}, \%callbacks, SMFI_CURR_ACTS);
+    $milter->register($$conf{name}, \%callbacks, SMFI_CURR_ACTS);
+
+    debug("registered as $$conf{name}");
 }
 
 sub main {
@@ -90,18 +98,26 @@ sub main {
         max_requests_per_child => $$conf{max_requests_per_child} || 100);
 
     $milter->set_dispatcher($dispatcher);
+
+    info("starting");
+
     $milter->main;
 }
 
 sub _envfrom_callback {
     my ($ctx, $from) = @_;
 
+    $from =~ s/(?:^\<)|(?:\>$)//g;
+
     my $self = __PACKAGE__->instance();
 
-    my $count = $self->driver->query($from);
-    warn "$from: $count\n";
+    my $conf = $self->config->global;
 
-    if ($count > 100) {
+    my $count = $self->driver->query($from);
+    debug("$count messages from $from");
+
+    if ($count > $$conf{limit}) {
+        info("$from exceeded message limit");
         $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
         return SMFIS_REJECT;
     }
