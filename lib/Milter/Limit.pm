@@ -1,3 +1,24 @@
+=head1 NAME
+
+Milter::Limit - Sendmail Milter that limits messages by sender
+
+=head1 SYNOPSIS
+
+ my $config = Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
+ my $milter = Milter::Limit->instance('BerkeleyDB');
+ $milter->register;
+ $milter->main
+
+=head1 DESCRIPTION
+
+This milter limits the number of messages sent by SMTP envelope sender within a
+specified time period.  The number of messages and length of time in which the
+maximum number of messages can be sent is configurable in the configuration
+file.  Once the limit is reached, messages will be rejected from that sender
+until the time period has elapsed.
+
+=cut
+
 package Milter::Limit;
 
 use strict;
@@ -8,7 +29,24 @@ use Sendmail::PMilter ':all';
 use Sys::Syslog ();
 use Carp;
 
+our $VERSION = '0.10';
+
 __PACKAGE__->mk_accessors(qw(driver milter));
+
+=head1 CONSTRUCTOR
+
+=over 4
+
+=item instance($driver)
+
+This gets the milter object, constructing it if necessary.  C<$driver> is the
+name of the driver that you wish to use.  Currently only BerkelyDB is
+available, but additional drivers can be created by writing a plugin module.
+See C<Milter::Limit::Plugin::BerkeleyDB> for an example plugin.
+
+=back
+
+=cut
 
 sub _new_instance {
     my ($class, $driver) = @_;
@@ -66,6 +104,18 @@ sub _init_driver {
     $self->driver($driver_class->instance);
 }
 
+=head1 METHODS
+
+The following methods are available
+
+=over 4
+
+=item register()
+
+Registers the milter with sendmail and sets up the milter handlers.
+See L<Milter::PMilter::register()>.
+
+=cut
 
 sub register {
     my $self = shift;
@@ -85,6 +135,12 @@ sub register {
 
     debug("registered as $$conf{name}");
 }
+
+=item main()
+
+Main milter loop.
+
+=cut
 
 sub main {
     my $self = shift;
@@ -126,9 +182,41 @@ sub _envfrom_callback {
     }
 }
 
+=item Milter::Limit::Config config()
+
+shortcut method to get the configuration object.
+
+=cut
+
 # shortcut to get the config.
 sub config {
     Milter::Limit::Config->instance;
 }
+
+=back
+
+=head1 SOURCE
+
+You can contribute to or fork this project via github:
+
+http://github.com/mschout/milter-limit.git
+
+=head1 BUGS / FEEDBACK
+
+Please report any bugs or feature requests to
+bug-milter-limit@rt.cpan.org, or through the web interface at
+http://rt.cpan.org
+
+I welcome feedback, patches and comments.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2009 by Michael Schout
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself, either Perl version 5.8.0 or, at your option,
+any later version of Perl 5 you may have available.
+
+=cut
 
 1;
