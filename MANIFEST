@@ -6,6 +6,8 @@ lib/Milter/Limit/Log.pm
 lib/Milter/Limit/Plugin.pm
 lib/Milter/Limit/Plugin/BerkeleyDB.pm
 lib/Milter/Limit/Util.pm
+LICENSE
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+README
