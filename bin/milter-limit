@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 use strict;
 use FindBin qw($RealBin);
@@ -7,14 +7,16 @@ use lib "$RealBin/../lib";
 use Getopt::Long;
 use Milter::Limit;
 use Milter::Limit::Util;
+use Pod::Usage;
 use Proc::PID::File;
 
 my %opts = (
-    debug  => 0,                            # debugging mode
-    config => '/etc/mail/milter-limit.conf' # config file
+    debug  => 0,
+    config => '/etc/mail/milter-limit.conf'
 );
 
-GetOptions(\%opts, 'debug|d', 'config|c=s');
+GetOptions(\%opts, 'debug|d', 'config|c=s', 'help|h');
+pod2usage(1) if $opts{help};
 
 main();
 
@@ -33,3 +35,41 @@ sub main {
     $milter->register;
     $milter->main;
 }
+
+__END__
+
+=head1 NAME
+
+milter-limit - Rate limiting sendmail milter
+
+=head1 SYNOPSIS
+
+milter-limit [options]
+
+ Options:
+   --debug                  debug mode
+   --config filename        configuration file name
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--debug>
+
+Enable debug mode.  Currently this just means the the program will not daemonize
+
+=item B<--config>  default: /etc/mail/milter-limit.conf
+
+Location of the milter-limit configuration file.
+
+=back
+
+=head1 DESCRIPTION
+
+B<milter-limit> is a sendmail milter for limiting the rate at which messages
+can be sent.  Currently the only supported mode of operation is to limit the
+number of messages by SMTP envelope sender.  More limiting options may be added
+later if demand exists for such features.
+
+=cut
+
