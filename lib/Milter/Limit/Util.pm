@@ -52,6 +52,50 @@ sub daemonize {
     return $sid;
 }
 
+=item get_uid($username): int
+
+lookup the UID for a username
+
+=cut
+
+sub get_uid {
+    my $user = shift;
+
+    unless ($user =~ /^\d+$/) {
+        my $uid = getpwnam($user);
+        unless (defined $uid) {
+            die qq{no such user "$user"\n};
+        }
+
+        return $uid;
+    }
+    else {
+        return $user;
+    }
+}
+
+=item get_gid($groupname): int
+
+lookup the GID for a group name
+
+=cut
+
+sub get_gid {
+    my $group = shift;
+
+    unless ($group =~ /^\d+$/) {
+        my $gid = getgrnam($group);
+        unless (defined $gid) {
+            die qq{no such group "$group"\n};
+        }
+
+        return $gid;
+    }
+    else {
+        return $group;
+    }
+}
+
 =back
 
 =head1 AUTHOR
