@@ -3,6 +3,7 @@ conf/milter-limit.conf
 lib/Milter/Limit.pm
 lib/Milter/Limit/Config.pm
 lib/Milter/Limit/Log.pm
+lib/Milter/Limit/PidFile.pm
 lib/Milter/Limit/Plugin.pm
 lib/Milter/Limit/Plugin/BerkeleyDB.pm
 lib/Milter/Limit/Util.pm

@@ -12,7 +12,8 @@ WriteMakefile(
         'Config::Tiny'      => 0,
         'BerkeleyDB'        => 0,  # not sure what min version we need
         'Sendmail::PMilter' => 0.90,
-        'Pod::Usage'        => 0
+        'Pod::Usage'        => 0,
+        'File::Pid'         => 0
     },
     ($] >= 5.005 ?
       (ABSTRACT_FROM => 'lib/Milter/Limit.pm',
