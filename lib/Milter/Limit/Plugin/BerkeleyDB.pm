@@ -1,3 +1,38 @@
+=head1 NAME
+
+Milter::Limit::Plugin::BerkeleyDB - Berkeley DB backend for Milter::Limit
+
+=head1 SYNOPSIS
+
+ my $milter = Milter::Limit->instance('BerkeleyDB');
+
+=head1 DESCRIPTION
+
+This module implements the C<Milter::Limit> backend using a BerkeleyDB data
+store.
+
+=head1 CONFIGURATION
+
+The C<[driver]> section of the configuration file must specify the following items:
+
+=over 4
+
+=item home
+
+The directory where the database files should be stored.
+
+=item file
+
+The database filename
+
+=item mode [optional]
+
+The file mode for the database files (default 0644).
+
+=back
+
+=cut
+
 package Milter::Limit::Plugin::BerkeleyDB;
 
 use strict;
@@ -8,17 +43,7 @@ use Fatal qw(mkpath);
 
 __PACKAGE__->mk_accessors(qw(_db));
 
-sub _new_instance {
-    my $class = shift;
-
-    my $self = $class->SUPER::_new_instance();
-
-    $self->_init;
-
-    return $self;
-}
-
-sub _init {
+sub init {
     my $self = shift;
 
     my $conf = Milter::Limit::Config->section('driver');
@@ -63,5 +88,19 @@ sub query {
 
     return $count;
 }
+
+=head1 AUTHOR
+
+Michael Schout <mschout@gkg.net>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2009 Michael Schout.  All rights reserved.
+
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. The full text of this license can be found in
+the LICENSE file included with this module.
+
+=cut
 
 1;
