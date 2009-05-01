@@ -70,6 +70,7 @@ sub init {
     $self->_init_driver($driver);
 }
 
+# initialize logging
 sub _init_log {
     my $self = shift;
 
@@ -170,7 +171,7 @@ sub _envfrom_callback {
     my $conf = $self->config->global;
 
     my $count = $self->driver->query($from);
-    debug("$count messages from $from");
+    debug("$from [$count/$$conf{limit}]");
 
     if ($count > $$conf{limit}) {
         info("$from exceeded message limit");
@@ -209,13 +210,17 @@ http://rt.cpan.org
 
 I welcome feedback, patches and comments.
 
+=head1 AUTHOR
+
+Michael Schout <mschout@gkg.net>
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2009 by Michael Schout
+Copyright (C) 2009 Michael Schout.  All rights reserved.
 
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself, either Perl version 5.8.0 or, at your option,
-any later version of Perl 5 you may have available.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. The full text of this license can be found in
+the LICENSE file included with this module.
 
 =cut
 
