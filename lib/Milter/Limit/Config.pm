@@ -58,8 +58,26 @@ sub _new_instance {
 
     # set defaults
     $config->{_}{name} ||= 'milter-limit';
+    $config->{_}{state_dir} ||= '/var/run/milter-limit';
 
-    return $class->SUPER::_new_instance({config => $config});
+    my $self = $class->SUPER::_new_instance({config => $config});
+
+    $self->init;
+
+    return $self;
+}
+
+sub init {
+    my $self = shift;
+
+    my $conf = $self->global;
+    if (my $user = $$conf{user}) {
+        $$conf{user} = Milter::Limit::Util::get_uid($user);
+    }
+
+    if (my $group = $$conf{group}) {
+        $$conf{group} = Milter::Limit::Util::get_gid($group);
+    }
 }
 
 =head1 METHODS
