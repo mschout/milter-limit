@@ -23,6 +23,10 @@ main();
 sub main {
     my $config = Milter::Limit::Config->instance($opts{config});
 
+    if ($opts{debug}) {
+        $config->global->{debug} = 1;
+    }
+
     Milter::Limit::Util::daemonize() unless $opts{debug};
 
     die "already running" if Proc::PID::File->running;
