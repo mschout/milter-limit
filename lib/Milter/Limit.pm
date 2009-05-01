@@ -23,6 +23,7 @@ package Milter::Limit;
 
 use strict;
 use base qw(Class::Accessor Class::Singleton);
+use File::Path qw(mkpath);
 use Milter::Limit::Config;
 use Milter::Limit::Log;
 use Sendmail::PMilter ':all';
@@ -65,6 +66,8 @@ sub init {
 
     $self->_init_log;
 
+    $self->_init_statedir;
+
     $self->milter(new Sendmail::PMilter);
 
     $self->_init_driver($driver);
@@ -89,6 +92,25 @@ sub _init_log {
         Sys::Syslog::syslog('crit', "fatal: ".join('',@_));
         die @_;
     };
+}
+
+# initialize the configured state dir.
+# default: /var/run/milter-limit
+sub _init_statedir {
+    my $self = shift;
+
+    my $conf = $self->config->global;
+
+    my $dir = $$conf{state_dir};
+    unless (-d $dir) {
+        mkpath($dir) or die "mkpath($dir): $!";
+
+    }
+
+    # make sure statedir is owned by the right user.
+    if ($$conf{user} != $> or $$conf{group} != $)) {
+        chown $$conf{user}, $$conf{group}, $dir;
+    }
 }
 
 sub _init_driver {
@@ -137,6 +159,21 @@ sub register {
     debug("registered as $$conf{name}");
 }
 
+# drop user/group privs.
+sub _drop_privileges {
+    my $self = shift;
+
+    my $conf = $self->config->global;
+
+    if (defined $$conf{group}) {
+        ($(,$)) = ($$conf{group}, $$conf{group});
+    }
+
+    if (defined $$conf{user}) {
+        ($<,$>) = ($$conf{user}, $$conf{user});
+    }
+}
+
 =item main()
 
 Main milter loop.
@@ -145,6 +182,8 @@ Main milter loop.
 
 sub main {
     my $self = shift;
+
+    $self->_drop_privileges;
 
     my $milter = $self->milter;
 
