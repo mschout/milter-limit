@@ -31,6 +31,7 @@ This milter requires these other modules and libraries:
    Class::Singleton
    Class::Accessor
    Config::Tiny
+   File::Pid
    Pod::Usage
    Sendmail::PMilter 0.90 or later
    Sys::Syslog
