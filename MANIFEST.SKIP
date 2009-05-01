@@ -15,3 +15,6 @@
 \.bak$
 
 ^\.git
+
+# vim swap files
+\.swp$
