@@ -7,8 +7,8 @@ use lib "$RealBin/../lib";
 use Getopt::Long;
 use Milter::Limit;
 use Milter::Limit::Util;
+use Milter::Limit::PidFile;
 use Pod::Usage;
-use Proc::PID::File;
 
 my %opts = (
     debug  => 0,
@@ -29,13 +29,12 @@ sub main {
 
     Milter::Limit::Util::daemonize() unless $opts{debug};
 
-    die "already running" if Proc::PID::File->running;
+    die "already running" if Milter::Limit::PidFile->running;
 
     $0 = $$config{name} || 'milter-limit';
 
     my $milter = Milter::Limit->instance('BerkeleyDB');
 
-    # XXX drop privs
     $milter->register;
     $milter->main;
 }
