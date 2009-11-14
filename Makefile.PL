@@ -10,7 +10,7 @@ WriteMakefile(
         'Class::Singleton'  => 0,
         'Sys::Syslog'       => 0,
         'Config::Tiny'      => 0,
-        'BerkeleyDB'        => 0,  # not sure what min version we need
+        'DBD::SQLite'       => 0,  # not sure what min version we need
         'Sendmail::PMilter' => 0.90,
         'Pod::Usage'        => 0,
         'File::Pid'         => 0
