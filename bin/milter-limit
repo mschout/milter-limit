@@ -33,7 +33,7 @@ sub main {
 
     $0 = $$config{name} || 'milter-limit';
 
-    my $milter = Milter::Limit->instance('BerkeleyDB');
+    my $milter = Milter::Limit->instance($config->global->{driver});
 
     $milter->register;
     $milter->main;
