@@ -221,17 +221,42 @@ sub _delete {
         or warn "failed to delete $sender: $DBI::errstr";
 }
 
+=head1 SOURCE
+
+You can contribute or fork this project via github:
+
+http://github.com/mschout/milter-limit
+
+ git clone git://github.com/mschout/milter-limit.git
+
 =head1 AUTHOR
 
-Michael Schout <mschout@gkg.net>
+Michael Schout E<lt>mschout@cpan.orgE<gt>
 
-=head1 COPYRIGHT AND LICENSE
+=head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2009 Michael Schout.  All rights reserved.
+Copyright 2009 Michael Schout.
 
 This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself. The full text of this license can be found in
-the LICENSE file included with this module.
+the terms of either:
+
+=over 4
+
+=item *
+
+the GNU General Public License as published by the Free Software Foundation;
+either version 1, or (at your option) any later version, or
+
+=item *
+
+the Artistic License version 2.0.
+
+=back
+
+=head1 SEE ALSO
+
+L<Milter::Limit::Plugin>,
+L<Milter::Limit>
 
 =cut
 
