@@ -107,7 +107,7 @@ the config file.
 =cut
 
 sub make_path {
-    my ($self, $path) = @_;
+    my $path = shift;
 
     unless (-d $path) {
         File::Path::make_path($path, { mode => 0755 });
