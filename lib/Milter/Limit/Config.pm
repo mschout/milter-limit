@@ -112,6 +112,30 @@ sub section {
     $self->instance->config->{$name};
 }
 
+=item set_defaults($section, %defaults): void
+
+set default values for a config section.  This will fill in the values from
+C<%defaults> in the given C<$section> name if the keys are not already set.
+Most likely you would call this as part of your plugin's C<init()> method to
+set plugin specific defaults.
+
+=cut
+
+sub set_defaults {
+    my ($self, $section, %defaults) = @_;
+
+    $section = '_' if $section eq 'global';
+
+    my $conf = $self->instance->config->{$section}
+        or die "config section [$section] does not exist in the config file\n";
+
+    for my $key (keys %defaults) {
+        unless (defined $$conf{$key}) {
+            $$conf{$key} = $defaults{$key};
+        }
+    }
+}
+
 =back
 
 =head1 AUTHOR
