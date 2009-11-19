@@ -18,6 +18,7 @@ use strict;
 use File::Pid;
 use Milter::Limit::Config;
 use Milter::Limit::Log;
+use Milter::Limit::Util;
 
 my $Pid;
 
@@ -38,6 +39,8 @@ sub running {
     my $class = shift;
 
     my $conf = Milter::Limit::Config->global;
+
+    Milter::Limit::Util::make_path($$conf{state_dir});
 
     my $me = File::Pid->program_name;
 
