@@ -68,6 +68,20 @@ sub config_get {
     return $$conf{$name};
 }
 
+=item config_defaults($section, %defaults)
+
+set default values for the given configuration section.
+
+See: L<Milter::Limit::Config/set_defaults>
+
+=cut
+
+sub config_defaults {
+    my ($self, $section, %defaults) = @_;
+
+    Milter::Limit::Config->set_defaults($section, %defaults);
+}
+
 =back
 
 All plugin subclasses must implement the following methods:
