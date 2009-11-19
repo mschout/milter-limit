@@ -33,6 +33,7 @@ package Milter::Limit::Plugin;
 
 use strict;
 use base 'Class::Singleton';
+use Milter::Limit::Config;
 
 sub _new_instance {
     my $class = shift;
@@ -46,7 +47,30 @@ sub _new_instance {
 
 =head1 METHODS
 
-All plugin subclasses must implement the following methods
+The following methods are available to plugin subclasses:
+
+=over 4
+
+=item config_get($section, $name)
+
+Get a configuration value from the given section with the given name.  If
+C<$section> is C<global> then the global config section is used.
+
+=cut
+
+sub config_get {
+    my ($self, $section, $name) = @_;
+
+    my $conf = $section eq 'global'
+             ? Milter::Limit::Config->global
+             : Milter::Limit::Config->section($section);
+
+    return $$conf{$name};
+}
+
+=back
+
+All plugin subclasses must implement the following methods:
 
 =over 4
 
@@ -90,7 +114,7 @@ the LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-L<Milter::Limit::Plugin::BerkeleyDB>
+L<Milter::Limit::Plugin::SQLite>
 
 =cut
 
