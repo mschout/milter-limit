@@ -18,6 +18,8 @@ package Milter::Limit::Util;
 
 use strict;
 use POSIX qw(setsid);
+use File::Path ();
+use Milter::Limit::Config;
 
 =head1 FUNCTIONS
 
@@ -94,6 +96,27 @@ sub get_gid {
     else {
         return $group;
     }
+}
+
+=item make_path($path): void
+
+create the given directory path if necessary, creating intermediate directories
+as necessary.  The final directory will be C<chown()>'ed as the user/group from
+the config file.
+
+=cut
+
+sub make_path {
+    my ($self, $path) = @_;
+
+    unless (-d $path) {
+        File::Path::make_path($path, { mode => 0755 });
+    }
+
+    my $conf = Milter::Limit::Config->global;
+
+    chown $$conf{user}, $$conf{group}, $path
+        or die "chown($path): $!";
 }
 
 =back
