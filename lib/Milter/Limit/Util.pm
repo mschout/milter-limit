@@ -42,8 +42,8 @@ sub daemonize {
     $SIG{HUP} = 'IGNORE';
     $pid = fork and exit 0;
 
-    # clear umask
-    umask 0;
+    # reset umask
+    umask 027;
 
     chdir '/' or die "can't chdir: $!";
 
