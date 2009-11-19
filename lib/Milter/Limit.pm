@@ -195,7 +195,13 @@ sub main {
 sub _envfrom_callback {
     my ($ctx, $from) = @_;
 
+    # strip angle brackets
     $from =~ s/(?:^\<)|(?:\>$)//g;
+
+    # do not restrict NULL sender (bounces)
+    unless (length $from) {
+        return SMFIS_CONTINUE;
+    }
 
     my $self = __PACKAGE__->instance();
 
