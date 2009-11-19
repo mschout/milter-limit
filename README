@@ -15,6 +15,9 @@ To install the milter type the following:
 copy the configuration file conf/milter-limit.conf to
 /etc/mail/milter-limit.conf and edit it to suit your needs.
 
+The default configuration will use an SQLite database to statistics in
+/var/db/milter-limit.
+
 You also need to tell sendmail about the milter.  Add something like the
 following to your sendmail.mc and generate a new sendmail.cf:
 
@@ -27,20 +30,33 @@ DEPENDENCIES
 
 This milter requires these other modules and libraries:
 
-   BerkeleyDB (for BerkeleyDB backend)
-   Class::Singleton
-   Class::Accessor
-   Config::Tiny
-   File::Pid
-   Pod::Usage
-   Sendmail::PMilter 0.90 or later
-   Sys::Syslog
+    Class::Accessor
+    Class::Singleton
+    Config::Tiny
+    File::Path 2.0 or later
+    File::Pid
+    Pod::Usage
+    Sendmail::PMilter 0.90 or later
+    Sys::Syslog
+
+If using the SQLite driver (the default), then the following are also required:
+
+    DBD::SQLite
+    DBIx::Connector
+
+Makefile.PL assumes that you are using the SQLite driver and checks for the
+SQLite dependencies.
 
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2009 Michael Schout.  All rights reserved.
+Copyright (C) 2009 Michael Schout.
 
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself. The full text of this license can be found in
-the LICENSE file included with this module.
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either:
+
+    *   the GNU General Public License as published by the Free Software
+        Foundation; either version 1, or (at your option) any later
+        version, or
+
+    *   the Artistic License version 2.0.
 
