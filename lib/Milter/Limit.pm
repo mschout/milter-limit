@@ -23,12 +23,15 @@ package Milter::Limit;
 
 use strict;
 use base qw(Class::Accessor Class::Singleton);
-use File::Path qw(mkpath);
+
+use Carp;
+use File::Path qw(make_path);
 use Milter::Limit::Config;
 use Milter::Limit::Log;
 use Sendmail::PMilter ':all';
 use Sys::Syslog ();
-use Carp;
+
+use Fatal qw(make_path);
 
 our $VERSION = '0.10';
 
@@ -103,8 +106,7 @@ sub _init_statedir {
 
     my $dir = $$conf{state_dir};
     unless (-d $dir) {
-        mkpath($dir) or die "mkpath($dir): $!";
-
+        make_path($dir, { mode => 0755 });
     }
 
     # make sure statedir is owned by the right user.
