@@ -17,17 +17,23 @@ The C<[driver]> section of the configuration file must specify the following ite
 
 =over 4
 
-=item home
+=item home [optional]
 
 The directory where the database files should be stored.
 
-=item file
+default: C<state_dir>
 
-The database filename
+=item file [optional]
+
+The database filename.
+
+default: C<stats.db>
 
 =item table [optional]
 
-Table name that will store the statistics (default milter).
+Table name that will store the statistics.
+
+default: C<milter>
 
 =back
 
@@ -39,52 +45,40 @@ use strict;
 use base qw(Milter::Limit::Plugin Class::Accessor);
 use DBI;
 use DBIx::Connector;
-use File::Path qw(make_path);
 use File::Spec;
-use Fatal qw(make_path);
+use Milter::Limit::Util;
 
 __PACKAGE__->mk_accessors(qw(_conn table));
 
 sub init {
     my $self = shift;
 
-    my $conf = Milter::Limit::Config->section('driver');
+    $self->init_defaults;
 
-    $self->init_home;
+    Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
 
-    # set table name
-    $self->table($$conf{table} || 'milter');
+    $self->table( $self->config_get('driver', 'table') );
 
     # setup the database
     $self->init_database;
 }
 
-sub init_home {
+sub init_defaults {
     my $self = shift;
 
-    my $driver_conf = Milter::Limit::Config->section('driver');
-
-    my $home = $$driver_conf{home};
-
-    unless (-d $home) {
-        make_path($home, { mode => 0755 });
-    }
-
-    # set ownership on home directory (SQLite needs to create files in here).
-    my $global_conf = Milter::Limit::Config->global;
-
-    my $uid = $$global_conf{user};
-    my $gid = $$global_conf{group};
-
-    chown $uid, $gid, $home or die "chown($home): $!";
+    $self->config_defaults('driver',
+        home  => $self->config_get('global', 'state_dir'),
+        file  => 'stats.db',
+        table => 'milter');
 }
 
 sub db_file {
     my $self = shift;
 
-    my $conf = Milter::Limit::Config->section('driver');
+    my $home = $self->config_get('driver', 'home');
+    my $file = $self->config_get('driver', 'file');
 
-    return File::Spec->catfile($$conf{home}, $$conf{file});
+    return File::Spec->catfile($home, $file);
 }
 
 sub _dbh {
@@ -106,19 +100,13 @@ sub init_database {
 
     $self->_conn($conn);
 
-    # prevent world read permissions.
-    my $old_umask = umask 027;
-
     unless ($self->table_exists($self->table)) {
         $self->create_table($self->table);
     }
 
-    umask $old_umask;
-
-    my $global_conf = Milter::Limit::Config->global;
-
-    my $uid = $$global_conf{user};
-    my $gid = $$global_conf{group};
+    # make sure the db file has the right owner.
+    my $uid = $self->config_get('global', 'user');
+    my $gid = $self->config_get('global', 'group');
 
     chown $uid, $gid, $db_file or die "chown($db_file): $!";
 }
@@ -128,8 +116,6 @@ sub query {
 
     $from = lc $from;
 
-    my $conf = Milter::Limit::Config->global;
-
     my $rec = $self->_retrieve($from);
 
     unless (defined $rec) {
@@ -138,11 +124,12 @@ sub query {
             or return 0;    # I give up
     }
 
-    my $start = $$rec{first_seen} || time;
-    my $count = $$rec{messages} || 0;
+    my $start  = $$rec{first_seen} || time;
+    my $count  = $$rec{messages} || 0;
+    my $expire = $self->config_get('global', 'expire');
 
     # reset counter if it is expired
-    if ($start < time - $$conf{expire}) {
+    if ($start < time - $expire) {
         $self->_delete($from);
         return 0;
     }
