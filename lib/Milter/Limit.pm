@@ -25,13 +25,11 @@ use strict;
 use base qw(Class::Accessor Class::Singleton);
 
 use Carp;
-use File::Path qw(make_path);
 use Milter::Limit::Config;
 use Milter::Limit::Log;
+use Milter::Limit::Util;
 use Sendmail::PMilter ':all';
 use Sys::Syslog ();
-
-use Fatal qw(make_path);
 
 our $VERSION = '0.10';
 
@@ -104,15 +102,7 @@ sub _init_statedir {
 
     my $conf = $self->config->global;
 
-    my $dir = $$conf{state_dir};
-    unless (-d $dir) {
-        make_path($dir, { mode => 0755 });
-    }
-
-    # make sure statedir is owned by the right user.
-    if ($$conf{user} != $> or $$conf{group} != $)) {
-        chown $$conf{user}, $$conf{group}, $dir;
-    }
+    Milter::Limit::Util::make_path($$conf{state_dir});
 }
 
 sub _init_driver {
