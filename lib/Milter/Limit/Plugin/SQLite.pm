@@ -25,9 +25,9 @@ The directory where the database files should be stored.
 
 The database filename
 
-=item mode [optional]
+=item table [optional]
 
-The file mode for the database files (default 0644).
+Table name that will store the statistics (default milter).
 
 =back
 
@@ -38,42 +38,89 @@ package Milter::Limit::Plugin::SQLite;
 use strict;
 use base qw(Milter::Limit::Plugin Class::Accessor);
 use DBI;
-use File::Path qw(mkpath);
+use DBIx::Connector;
+use File::Path qw(make_path);
 use File::Spec;
-use Fatal qw(mkpath);
+use Fatal qw(make_path);
 
-__PACKAGE__->mk_accessors(qw(_dbh table));
+__PACKAGE__->mk_accessors(qw(_conn table));
 
 sub init {
     my $self = shift;
 
     my $conf = Milter::Limit::Config->section('driver');
 
-    unless (-d $$conf{home}) {
-        mkpath $$conf{home};
-    }
+    $self->init_home;
 
-    my $db_file = File::Spec->catfile($$conf{home}, $$conf{file});
+    # set table name
+    $self->table($$conf{table} || 'milter');
 
-    $self->table($$conf{table});
-
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$db_file", '', '', {
-        PrintError      => 0,
-        AutoCommit      => 1,
-        InactiveDestroy => 1 })
-        or die "failed to initialize SQLite: $!";
-
-    $self->_dbh($dbh);
-
-    $self->database_setup;
+    # setup the database
+    $self->init_database;
 }
 
-sub database_setup {
+sub init_home {
     my $self = shift;
+
+    my $driver_conf = Milter::Limit::Config->section('driver');
+
+    my $home = $$driver_conf{home};
+
+    unless (-d $home) {
+        make_path($home, { mode => 0755 });
+    }
+
+    # set ownership on home directory (SQLite needs to create files in here).
+    my $global_conf = Milter::Limit::Config->global;
+
+    my $uid = $$global_conf{user};
+    my $gid = $$global_conf{group};
+
+    chown $uid, $gid, $home or die "chown($home): $!";
+}
+
+sub db_file {
+    my $self = shift;
+
+    my $conf = Milter::Limit::Config->section('driver');
+
+    return File::Spec->catfile($$conf{home}, $$conf{file});
+}
+
+sub _dbh {
+    my $self = shift;
+
+    return $self->_conn->dbh;
+}
+
+sub init_database {
+    my $self = shift;
+
+    # setup connection to the database.
+    my $db_file = $self->db_file;
+
+    my $conn = DBIx::Connector->new("dbi:SQLite:dbname=$db_file", '', '', {
+        PrintError => 0,
+        AutoCommit => 1 })
+        or die "failed to initialize SQLite: $!";
+
+    $self->_conn($conn);
+
+    # prevent world read permissions.
+    my $old_umask = umask 027;
 
     unless ($self->table_exists($self->table)) {
         $self->create_table($self->table);
     }
+
+    umask $old_umask;
+
+    my $global_conf = Milter::Limit::Config->global;
+
+    my $uid = $$global_conf{user};
+    my $gid = $$global_conf{group};
+
+    chown $uid, $gid, $db_file or die "chown($db_file): $!";
 }
 
 sub query {
@@ -91,8 +138,8 @@ sub query {
             or return 0;    # I give up
     }
 
-    my $start = $$rec{first_seen};
-    my $count = $$rec{messages};
+    my $start = $$rec{first_seen} || time;
+    my $count = $$rec{messages} || 0;
 
     # reset counter if it is expired
     if ($start < time - $$conf{expire}) {
@@ -106,6 +153,7 @@ sub query {
     return $count + 1;
 }
 
+# return true if the given db table exists.
 sub table_exists {
     my ($self, $table) = @_;
 
@@ -115,16 +163,17 @@ sub table_exists {
     return 1;
 }
 
+# create the given table as the stats table.
 sub create_table {
     my ($self, $table) = @_;
 
-    my $dbh = $self->dbh;
+    my $dbh = $self->_dbh;
 
     $dbh->do(qq{
         create table $table (
             sender varchar (255),
             first_seen timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            messages integer,
+            messages integer NOT NULL DEFAULT 0,
             PRIMARY KEY (sender)
         )
     }) or die "failed to create table $table: $DBI::errstr";
@@ -152,7 +201,16 @@ sub _retrieve {
 
     my $table = $self->table;
 
-    my $query = q{select * from $table where sender = ?};
+    my $query = qq{
+        select
+            sender,
+            messages,
+            strftime('%s',first_seen) as first_seen
+        from
+            $table
+        where
+            sender = ?
+    };
 
     return $self->_dbh->selectrow_hashref($query, undef, $sender);
 }
@@ -162,7 +220,7 @@ sub _update {
 
     my $table = $self->table;
 
-    my $query = q{update $table set messages = messages + 1 where sender = ?};
+    my $query = qq{update $table set messages = messages + 1 where sender = ?};
 
     return $self->_dbh->do($query, undef, $sender);
 }
