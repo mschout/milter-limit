@@ -8,12 +8,14 @@ WriteMakefile(
     PREREQ_PM    => {
         'Class::Accessor'   => 0,
         'Class::Singleton'  => 0,
+        'DBIx::Connector'   => 0,
         'Sys::Syslog'       => 0,
         'Config::Tiny'      => 0,
         'DBD::SQLite'       => 0,  # not sure what min version we need
         'Sendmail::PMilter' => 0.90,
         'Pod::Usage'        => 0,
-        'File::Pid'         => 0
+        'File::Pid'         => 0,
+        'File::Path'        => 2.00
     },
     ($] >= 5.005 ?
       (ABSTRACT_FROM => 'lib/Milter/Limit.pm',
