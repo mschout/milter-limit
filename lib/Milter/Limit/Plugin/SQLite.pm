@@ -130,8 +130,8 @@ sub query {
 
     # reset counter if it is expired
     if ($start < time - $expire) {
-        $self->_delete($from);
-        return 0;
+        $self->_reset($from);
+        return 1;
     }
 
     # update database for this sender.
@@ -212,13 +212,21 @@ sub _update {
     return $self->_dbh->do($query, undef, $sender);
 }
 
-sub _delete {
+sub _reset {
     my ($self, $sender) = @_;
 
     my $table = $self->table;
 
-    $self->_dbh->do(qq{delete from $table where sender = ?}, undef, $sender)
-        or warn "failed to delete $sender: $DBI::errstr";
+    $self->_dbh->do(qq{
+        update
+            $table
+        set
+            messages   = 1,
+            first_seen = CURRENT_TIMESTAMP
+        where
+            sender = ?
+    }, undef, $sender)
+        or warn "failed to reset $sender: $DBI::errstr";
 }
 
 =head1 SOURCE
