@@ -12,10 +12,24 @@ To install the milter type the following:
    make
    make install
 
+*** YOU MUST ALSO INSTALL A PLUGIN BACKEND TO STORE STATISTICS ***
+
+App::Milter::Limit needs a plugin to store mail statistics.  Two plugins
+maintained by myself are App::Milter::Limit::Plugin::SQLite, and
+App::Milter::Limit::Plugin::BerkeleyDB, which use an SQLite database, and a
+BerkeleyDB database respectively to store the statistics used by
+App::Milter::Limit.  You MUST install one of these plugins to use
+App::Milter::Limit.
+
+Download your desired plugin from CPAN, and follow their instructions to
+install them.
+
+CONFIGURATION
+
 copy the configuration file conf/milter-limit.conf to
 /etc/mail/milter-limit.conf and edit it to suit your needs.
 
-The default configuration will use an SQLite database to statistics in
+The default configuration will use the SQLite plugin and stores statistics in
 /var/db/milter-limit.
 
 You also need to tell sendmail about the milter.  Add something like the
@@ -26,30 +40,9 @@ INPUT_MAIL_FILTER(`milter-limit', `S=local:/var/run/milter-limit.sock')
 Finally, you need to arrage for the milter to start at boot time.  some init
 scripts are available in the contrib directory.
 
-DEPENDENCIES
-
-This milter requires these other modules and libraries:
-
-    Class::Accessor
-    Class::Singleton
-    Config::Tiny
-    File::Path 2.0 or later
-    File::Pid
-    Pod::Usage
-    Sendmail::PMilter 0.90 or later
-    Sys::Syslog
-
-If using the SQLite driver (the default), then the following are also required:
-
-    DBD::SQLite
-    DBIx::Connector
-
-Makefile.PL assumes that you are using the SQLite driver and checks for the
-SQLite dependencies.
-
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2009 Michael Schout.
+Copyright (C) 2010 Michael Schout.
 
     This program is free software; you can redistribute it and/or modify it
     under the terms of either:
