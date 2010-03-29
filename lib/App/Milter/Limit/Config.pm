@@ -8,6 +8,12 @@ use Config::Tiny;
 
 __PACKAGE__->mk_accessors(qw(config));
 
+=begin Pod::Coverage
+
+init
+
+=end Pod::Coverage
+
 =method instance $config_file
 
 reads the ini style configuration from C<$config_file> and returns the
