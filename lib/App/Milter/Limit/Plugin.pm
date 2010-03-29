@@ -1,13 +1,13 @@
 =head1 NAME
 
-Milter::Limit::Plugin - Milter::Limit driver plugin base class
+App::Milter::Limit::Plugin - App::Milter::Limit driver plugin base class
 
 =head1 SYNOPSIS
 
  # in your driver module:
- package Milter::Limit::Plugin::FooBar;
+ package App::Milter::Limit::Plugin::FooBar;
 
- use base 'Milter::Limit::Plugin';
+ use base 'App::Milter::Limit::Plugin';
 
  sub init {
      my $self = shift;
@@ -25,15 +25,15 @@ Milter::Limit::Plugin - Milter::Limit driver plugin base class
 
 =head1 DESCRIPTION
 
-This module is the base class for C<Milter::Limit> backend plugins.
+This module is the base class for C<App::Milter::Limit> backend plugins.
 
 =cut
 
-package Milter::Limit::Plugin;
+package App::Milter::Limit::Plugin;
 
 use strict;
 use base 'Class::Singleton';
-use Milter::Limit::Config;
+use App::Milter::Limit::Config;
 
 sub _new_instance {
     my $class = shift;
@@ -62,8 +62,8 @@ sub config_get {
     my ($self, $section, $name) = @_;
 
     my $conf = $section eq 'global'
-             ? Milter::Limit::Config->global
-             : Milter::Limit::Config->section($section);
+             ? App::Milter::Limit::Config->global
+             : App::Milter::Limit::Config->section($section);
 
     return $$conf{$name};
 }
@@ -72,14 +72,14 @@ sub config_get {
 
 set default values for the given configuration section.
 
-See: L<Milter::Limit::Config/set_defaults>
+See: L<App::Milter::Limit::Config/set_defaults>
 
 =cut
 
 sub config_defaults {
     my ($self, $section, %defaults) = @_;
 
-    Milter::Limit::Config->set_defaults($section, %defaults);
+    App::Milter::Limit::Config->set_defaults($section, %defaults);
 }
 
 =back
@@ -148,7 +148,7 @@ the Artistic License version 2.0.
 
 =head1 SEE ALSO
 
-L<Milter::Limit::Plugin::SQLite>
+L<App::Milter::Limit::Plugin::SQLite>
 
 =cut
 

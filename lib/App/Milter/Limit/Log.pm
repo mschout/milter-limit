@@ -1,10 +1,10 @@
 =head1 NAME
 
-Milter::Limit::Log - logging functions for Milter::Limit
+App::Milter::Limit::Log - logging functions for App::Milter::Limit
 
 =head1 SYNOPSIS
 
- use Milter::Limit::Log;
+ use App::Milter::Limit::Log;
 
  debug("whatever");
  info("something interesting happened");
@@ -12,12 +12,12 @@ Milter::Limit::Log - logging functions for Milter::Limit
 =head1 DESCRIPTION
 
 This module provides syslog wrapper functions.  Syslog is setup automatically
-when you create a L<Milter::Limit> object.  Once that has been done, these
+when you create a L<App::Milter::Limit> object.  Once that has been done, these
 functions can be used for logging purposes.
 
 =cut
 
-package Milter::Limit::Log;
+package App::Milter::Limit::Log;
 
 use strict;
 use base 'Exporter';
@@ -56,7 +56,7 @@ sub info {
 =head1 NOTE
 
 warn() is also available, and will log a message at level warning becuase
-C<$SIG{__WARN__}> is set by C<Milter::Limit>.
+C<$SIG{__WARN__}> is set by C<App::Milter::Limit>.
 
 =head1 SOURCE
 

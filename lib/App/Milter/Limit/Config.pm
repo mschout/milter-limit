@@ -1,14 +1,14 @@
 =head1 NAME
 
-Milter::Limit::Config - Milter Limit configuration object
+App::Milter::Limit::Config - Milter Limit configuration object
 
 =head1 SYNOPSIS
 
  # pass config file name first time.
- my $conf = Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
+ my $conf = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
 
  # after that, just call instance()
- $conf = Milter::Limit::Config->instance();
+ $conf = App::Milter::Limit::Config->instance();
 
  # global config section
  my $global = $conf->global;
@@ -24,13 +24,13 @@ Milter::Limit::Config - Milter Limit configuration object
 
 =head1 DESCRIPTION
 
-C<Milter::Limit::Config> is holds the configuration data for milter-limit.  The
+C<App::Milter::Limit::Config> is holds the configuration data for milter-limit.  The
 configuration data is read from an ini-style config file as a C<Config::Tiny>
 object.
 
 =cut
 
-package Milter::Limit::Config;
+package App::Milter::Limit::Config;
 
 use strict;
 use base qw(Class::Singleton Class::Accessor);
@@ -72,11 +72,11 @@ sub init {
 
     my $conf = $self->global;
     if (my $user = $$conf{user}) {
-        $$conf{user} = Milter::Limit::Util::get_uid($user);
+        $$conf{user} = App::Milter::Limit::Util::get_uid($user);
     }
 
     if (my $group = $$conf{group}) {
-        $$conf{group} = Milter::Limit::Util::get_gid($group);
+        $$conf{group} = App::Milter::Limit::Util::get_gid($group);
     }
 }
 

@@ -1,10 +1,10 @@
 =head1 NAME
 
-Milter::Limit::PidFile - Pid file class
+App::Milter::Limit::PidFile - Pid file class
 
 =head1 SYNOPSIS
 
- die "already running" if Milter::Limit::PidFile->running;
+ die "already running" if App::Milter::Limit::PidFile->running;
 
 =head1 DESCRIPTION
 
@@ -12,13 +12,13 @@ This class manages the milter limit PID file.
 
 =cut
 
-package Milter::Limit::PidFile;
+package App::Milter::Limit::PidFile;
 
 use strict;
 use File::Pid;
-use Milter::Limit::Config;
-use Milter::Limit::Log;
-use Milter::Limit::Util;
+use App::Milter::Limit::Config;
+use App::Milter::Limit::Log;
+use App::Milter::Limit::Util;
 
 my $Pid;
 
@@ -38,9 +38,9 @@ pid file will be removed automatically.
 sub running {
     my $class = shift;
 
-    my $conf = Milter::Limit::Config->global;
+    my $conf = App::Milter::Limit::Config->global;
 
-    Milter::Limit::Util::make_path($$conf{state_dir});
+    App::Milter::Limit::Util::make_path($$conf{state_dir});
 
     my $me = File::Pid->program_name;
 

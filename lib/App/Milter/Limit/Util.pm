@@ -1,25 +1,25 @@
 =head1 NAME
 
-Milter::Limit::Util - utility functions for Milter::Limit
+App::Milter::Limit::Util - utility functions for App::Milter::Limit
 
 =head1 SYNOPSIS
 
- use Milter::Limit::Util;
+ use App::Milter::Limit::Util;
 
- Milter::Limit::Util::daemonize();
+ App::Milter::Limit::Util::daemonize();
 
 =head1 DESCRIPTION
 
-This module provides utility functions for Milter::Limit.
+This module provides utility functions for App::Milter::Limit.
 
 =cut
 
-package Milter::Limit::Util;
+package App::Milter::Limit::Util;
 
 use strict;
 use POSIX qw(setsid);
 use File::Path ();
-use Milter::Limit::Config;
+use App::Milter::Limit::Config;
 
 =head1 FUNCTIONS
 
@@ -113,7 +113,7 @@ sub make_path {
         File::Path::make_path($path, { mode => 0755 });
     }
 
-    my $conf = Milter::Limit::Config->global;
+    my $conf = App::Milter::Limit::Config->global;
 
     chown $$conf{user}, $$conf{group}, $path
         or die "chown($path): $!";

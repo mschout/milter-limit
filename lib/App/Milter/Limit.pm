@@ -1,11 +1,11 @@
 =head1 NAME
 
-Milter::Limit - Sendmail Milter that limits messages by sender
+App::Milter::Limit - Sendmail Milter that limits messages by sender
 
 =head1 SYNOPSIS
 
- my $config = Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
- my $milter = Milter::Limit->instance('BerkeleyDB');
+ my $config = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
+ my $milter = App::Milter::Limit->instance('BerkeleyDB');
  $milter->register;
  $milter->main
 
@@ -19,15 +19,15 @@ until the time period has elapsed.
 
 =cut
 
-package Milter::Limit;
+package App::Milter::Limit;
 
 use strict;
 use base qw(Class::Accessor Class::Singleton);
 
 use Carp;
-use Milter::Limit::Config;
-use Milter::Limit::Log;
-use Milter::Limit::Util;
+use App::Milter::Limit::Config;
+use App::Milter::Limit::Log;
+use App::Milter::Limit::Util;
 use Sendmail::PMilter ':all';
 use Sys::Syslog ();
 
@@ -44,7 +44,7 @@ __PACKAGE__->mk_accessors(qw(driver milter));
 This gets the milter object, constructing it if necessary.  C<$driver> is the
 name of the driver that you wish to use.  Currently only BerkelyDB is
 available, but additional drivers can be created by writing a plugin module.
-See C<Milter::Limit::Plugin::BerkeleyDB> for an example plugin.
+See C<App::Milter::Limit::Plugin::BerkeleyDB> for an example plugin.
 
 =back
 
@@ -102,13 +102,13 @@ sub _init_statedir {
 
     my $conf = $self->config->global;
 
-    Milter::Limit::Util::make_path($$conf{state_dir});
+    App::Milter::Limit::Util::make_path($$conf{state_dir});
 }
 
 sub _init_driver {
     my ($self, $driver) = @_;
 
-    my $driver_class = "Milter::Limit::Plugin::$driver";
+    my $driver_class = "App::Milter::Limit::Plugin::$driver";
 
     eval "require $driver_class";
     if ($@) {
@@ -237,7 +237,7 @@ sub _envfrom_callback {
     }
 }
 
-=item Milter::Limit::Config config()
+=item App::Milter::Limit::Config config()
 
 shortcut method to get the configuration object.
 
@@ -245,7 +245,7 @@ shortcut method to get the configuration object.
 
 # shortcut to get the config.
 sub config {
-    Milter::Limit::Config->instance;
+    App::Milter::Limit::Config->instance;
 }
 
 =back

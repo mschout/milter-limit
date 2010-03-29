@@ -2,8 +2,8 @@ use 5.008;
 use ExtUtils::MakeMaker;
 
 my %conf = (
-    NAME         => 'Milter::Limit',
-    VERSION_FROM => 'lib/Milter/Limit.pm',
+    NAME         => 'App::Milter::Limit',
+    VERSION_FROM => 'lib/App/Milter/Limit.pm',
     EXE_FILES    => ['bin/milter-limit'],
     PREREQ_PM    => {
         'Class::Accessor'   => 0,
@@ -23,7 +23,7 @@ if (MM->can('signature_target')) {
 }
 
 if ($] >= 5.005) {
-  $conf{ABSTRACT_FROM} = 'lib/Milter/Limit.pm';
+  $conf{ABSTRACT_FROM} = 'lib/App/Milter/Limit.pm';
   $conf{AUTHOR}        = 'Michael Schout <mschout@cpan.org>';
 }
 

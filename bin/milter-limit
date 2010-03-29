@@ -5,9 +5,9 @@ use FindBin qw($RealBin);
 use lib "$RealBin/../lib";
 
 use Getopt::Long;
-use Milter::Limit;
-use Milter::Limit::Util;
-use Milter::Limit::PidFile;
+use App::Milter::Limit;
+use App::Milter::Limit::Util;
+use App::Milter::Limit::PidFile;
 use Pod::Usage;
 
 my %opts = (
@@ -21,19 +21,19 @@ pod2usage(1) if $opts{help};
 main();
 
 sub main {
-    my $config = Milter::Limit::Config->instance($opts{config});
+    my $config = App::Milter::Limit::Config->instance($opts{config});
 
     if ($opts{debug}) {
         $config->global->{debug} = 1;
     }
 
-    Milter::Limit::Util::daemonize() unless $opts{debug};
+    App::Milter::Limit::Util::daemonize() unless $opts{debug};
 
-    die "already running" if Milter::Limit::PidFile->running;
+    die "already running" if App::Milter::Limit::PidFile->running;
 
     $0 = $$config{name} || 'milter-limit';
 
-    my $milter = Milter::Limit->instance($config->global->{driver});
+    my $milter = App::Milter::Limit->instance($config->global->{driver});
 
     $milter->register;
     $milter->main;

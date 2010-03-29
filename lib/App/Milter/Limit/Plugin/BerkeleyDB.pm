@@ -1,14 +1,14 @@
 =head1 NAME
 
-Milter::Limit::Plugin::BerkeleyDB - Berkeley DB backend for Milter::Limit
+App::Milter::Limit::Plugin::BerkeleyDB - Berkeley DB backend for App::Milter::Limit
 
 =head1 SYNOPSIS
 
- my $milter = Milter::Limit->instance('BerkeleyDB');
+ my $milter = App::Milter::Limit->instance('BerkeleyDB');
 
 =head1 DESCRIPTION
 
-This module implements the C<Milter::Limit> backend using a BerkeleyDB data
+This module implements the C<App::Milter::Limit> backend using a BerkeleyDB data
 store.
 
 =head1 CONFIGURATION
@@ -33,11 +33,11 @@ The file mode for the database files (default 0644).
 
 =cut
 
-package Milter::Limit::Plugin::BerkeleyDB;
+package App::Milter::Limit::Plugin::BerkeleyDB;
 
 use strict;
-use base qw(Milter::Limit::Plugin Class::Accessor);
-use Milter::Limit::Log;
+use base qw(App::Milter::Limit::Plugin Class::Accessor);
+use App::Milter::Limit::Log;
 use BerkeleyDB qw(DB_CREATE DB_INIT_MPOOL DB_INIT_CDB);
 use File::Path qw(mkpath);
 use Fatal qw(mkpath);
@@ -49,7 +49,7 @@ sub init {
 
     $self->init_defaults;
 
-    Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
+    App::Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
 
     # db/env creation deferred until child_init
 }
@@ -66,7 +66,7 @@ sub init_defaults {
 sub child_init {
     my $self = shift;
 
-    my $conf = Milter::Limit::Config->section('driver');
+    my $conf = App::Milter::Limit::Config->section('driver');
 
     my $env = BerkeleyDB::Env->new(
         -Home  => $$conf{home},
@@ -86,7 +86,7 @@ sub child_init {
 sub query {
     my ($self, $from) = @_;
 
-    my $conf = Milter::Limit::Config->global;
+    my $conf = App::Milter::Limit::Config->global;
 
     my $db = $self->_db;
 

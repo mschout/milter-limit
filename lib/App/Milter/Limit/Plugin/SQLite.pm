@@ -1,14 +1,14 @@
 =head1 NAME
 
-Milter::Limit::Plugin::SQLite - SQLite backend for Milter::Limit
+App::Milter::Limit::Plugin::SQLite - SQLite backend for App::Milter::Limit
 
 =head1 SYNOPSIS
 
- my $milter = Milter::Limit->instance('SQLite');
+ my $milter = App::Milter::Limit->instance('SQLite');
 
 =head1 DESCRIPTION
 
-This module implements the C<Milter::Limit> backend using a SQLite data
+This module implements the C<App::Milter::Limit> backend using a SQLite data
 store.
 
 =head1 CONFIGURATION
@@ -39,14 +39,14 @@ default: C<milter>
 
 =cut
 
-package Milter::Limit::Plugin::SQLite;
+package App::Milter::Limit::Plugin::SQLite;
 
 use strict;
-use base qw(Milter::Limit::Plugin Class::Accessor);
+use base qw(App::Milter::Limit::Plugin Class::Accessor);
 use DBI;
 use File::Spec;
-use Milter::Limit::Log;
-use Milter::Limit::Util;
+use App::Milter::Limit::Log;
+use App::Milter::Limit::Util;
 
 __PACKAGE__->mk_accessors(qw(_dbh table));
 
@@ -55,7 +55,7 @@ sub init {
 
     $self->init_defaults;
 
-    Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
+    App::Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
 
     $self->table( $self->config_get('driver', 'table') );
 
@@ -287,8 +287,8 @@ the Artistic License version 2.0.
 
 =head1 SEE ALSO
 
-L<Milter::Limit::Plugin>,
-L<Milter::Limit>
+L<App::Milter::Limit::Plugin>,
+L<App::Milter::Limit>
 
 =cut
 
