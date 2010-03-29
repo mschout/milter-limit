@@ -37,6 +37,7 @@ package Milter::Limit::Plugin::BerkeleyDB;
 
 use strict;
 use base qw(Milter::Limit::Plugin Class::Accessor);
+use Milter::Limit::Log;
 use BerkeleyDB qw(DB_CREATE DB_INIT_MPOOL DB_INIT_CDB);
 use File::Path qw(mkpath);
 use Fatal qw(mkpath);
@@ -46,19 +47,40 @@ __PACKAGE__->mk_accessors(qw(_db));
 sub init {
     my $self = shift;
 
+    $self->init_defaults;
+
+    Milter::Limit::Util::make_path($self->config_get('driver', 'home'));
+
+    # db/env creation deferred until child_init
+}
+
+sub init_defaults {
+    my $self = shift;
+
+    $self->config_defaults('driver',
+        home  => $self->config_get('global', 'state_dir'),
+        file  => 'bdb-stats.db',
+    );
+}
+
+sub child_init {
+    my $self = shift;
+
     my $conf = Milter::Limit::Config->section('driver');
 
     my $env = BerkeleyDB::Env->new(
-        -Home     => $$conf{home},
-        -Flags => DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB);
+        -Home  => $$conf{home},
+        -Flags => DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB)
+            or die "failed to open BerkeleyDB env: $!";
 
     my $db = BerkeleyDB::Hash->new(
         -Filename => $$conf{file},
-        -Mode     => $$conf{mode} || 0644,
         -Env      => $env,
-        -Flags    => DB_CREATE) or die "failed to open BerkeleyDB";
+        -Flags    => DB_CREATE) or die "failed to open BerkeleyDB: $!";
 
     $self->_db($db);
+
+    debug("BerkeleyDB connection initialized");
 }
 
 sub query {
@@ -66,8 +88,10 @@ sub query {
 
     my $conf = Milter::Limit::Config->global;
 
+    my $db = $self->_db;
+
     my $val;
-    $self->_db->db_get($from, $val);
+    $db->db_get($from, $val);
 
     unless (defined $val) {
         # initialize new record for sender
@@ -84,7 +108,7 @@ sub query {
 
     # update database for this sender.
     $val = join ':', $start, ++$count;
-    $self->_db->db_put($from, $val);
+    $db->db_put($from, $val);
 
     return $count;
 }
