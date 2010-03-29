@@ -9,12 +9,16 @@ use Carp;
 use App::Milter::Limit::Config;
 use App::Milter::Limit::Log;
 use App::Milter::Limit::Util;
-use Sendmail::PMilter 0.98;
+use Sendmail::PMilter 0.98 ':all';
 use Sys::Syslog ();
 
-Sendmail::PMilter->import(':all');
-
 __PACKAGE__->mk_accessors(qw(driver milter));
+
+=begin Pod::Coverage
+
+init
+
+=end Pod::Coverage
 
 =method instance($driver)
 
