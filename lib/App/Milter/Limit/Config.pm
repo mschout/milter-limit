@@ -1,36 +1,6 @@
-=head1 NAME
-
-App::Milter::Limit::Config - Milter Limit configuration object
-
-=head1 SYNOPSIS
-
- # pass config file name first time.
- my $conf = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
-
- # after that, just call instance()
- $conf = App::Milter::Limit::Config->instance();
-
- # global config section
- my $global = $conf->global;
- my $limit = $global->{limit};
-
- # log section
- my $log_conf = $conf->section('log');
- my $ident = $log_conf->{identity};
-
- # driver section
- my $driver = $conf->section('driver');
- my $home = $driver->{home};
-
-=head1 DESCRIPTION
-
-C<App::Milter::Limit::Config> is holds the configuration data for milter-limit.  The
-configuration data is read from an ini-style config file as a C<Config::Tiny>
-object.
-
-=cut
-
 package App::Milter::Limit::Config;
+
+# ABSTRACT: Milter Limit configuration object
 
 use strict;
 use base qw(Class::Singleton Class::Accessor);
@@ -38,15 +8,10 @@ use Config::Tiny;
 
 __PACKAGE__->mk_accessors(qw(config));
 
-=head1 CONSTRUCTOR
+=method instance $config_file
 
-=over 4
-
-=item instance($config_file): Config::Tiny
-
-read the ini style configuration from C<$config_file> and returns the C<Config::Tiny> object
-
-=back
+reads the ini style configuration from C<$config_file> and returns the
+C<Config::Tiny> object
 
 =cut
 
@@ -80,19 +45,13 @@ sub init {
     }
 }
 
-=head1 METHODS
+=method instance
 
-The following methods are available:
+get the configuration I<Config::Tiny> object.
 
-=over 4
+=method global
 
-=item instance(): Config::Tiny
-
-get the configuration object.
-
-=item global(): hashref
-
-get the global configuration section
+get global configuration section (hashref)
 
 =cut
 
@@ -101,7 +60,7 @@ sub global {
     $self->instance->config->{_};
 }
 
-=item section($name): hashref
+=method section
 
 get the configuration for the given section name
 
@@ -112,7 +71,7 @@ sub section {
     $self->instance->config->{$name};
 }
 
-=item set_defaults($section, %defaults): void
+=method set_defaults $section, %defaults
 
 set default values for a config section.  This will fill in the values from
 C<%defaults> in the given C<$section> name if the keys are not already set.
@@ -136,44 +95,38 @@ sub set_defaults {
     }
 }
 
-=back
+1;
 
-=head1 SOURCE
+__END__
 
-You can contribute or fork this project via github:
+=head1 SYNOPSIS
 
-http://github.com/mschout/milter-limit
+ # pass config file name first time.
+ my $conf = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
 
- git clone git://github.com/mschout/milter-limit.git
+ # after that, just call instance()
+ $conf = App::Milter::Limit::Config->instance();
 
-=head1 AUTHOR
+ # global config section
+ my $global = $conf->global;
+ my $limit = $global->{limit};
 
-Michael Schout E<lt>mschout@cpan.orgE<gt>
+ # log section
+ my $log_conf = $conf->section('log');
+ my $ident = $log_conf->{identity};
 
-=head1 COPYRIGHT & LICENSE
+ # driver section
+ my $driver = $conf->section('driver');
+ my $home = $driver->{home};
 
-Copyright 2009 Michael Schout.
+=head1 DESCRIPTION
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of either:
+C<App::Milter::Limit::Config> is holds the configuration data for milter-limit.  The
+configuration data is read from an ini-style config file as a C<Config::Tiny>
+object.
 
-=over 4
-
-=item *
-
-the GNU General Public License as published by the Free Software Foundation;
-either version 1, or (at your option) any later version, or
-
-=item *
-
-the Artistic License version 2.0.
-
-=back
+=cut
 
 =head1 SEE ALSO
 
 L<Config::Tiny>
-
-=cut
-
-1;

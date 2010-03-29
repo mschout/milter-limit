@@ -1,12 +1,6 @@
-=head1 NAME
+package App::Milter::Limit::Util;
 
-App::Milter::Limit::Util - utility functions for App::Milter::Limit
-
-=head1 SYNOPSIS
-
- use App::Milter::Limit::Util;
-
- App::Milter::Limit::Util::daemonize();
+# ABSTRACT: utility functions for App::Milter::Limit
 
 =head1 DESCRIPTION
 
@@ -14,18 +8,12 @@ This module provides utility functions for App::Milter::Limit.
 
 =cut
 
-package App::Milter::Limit::Util;
-
 use strict;
 use POSIX qw(setsid);
-use File::Path ();
+use File::Path 2.0 ();
 use App::Milter::Limit::Config;
 
-=head1 FUNCTIONS
-
-=over 4
-
-=item daemonize()
+=func daemonize
 
 This daemonizes the program.  When you call this, the program will fork(),
 detach from the controlling TTY, close STDIN, STDOUT, and STDERR, and change to
@@ -54,9 +42,9 @@ sub daemonize {
     return $sid;
 }
 
-=item get_uid($username): int
+=func get_uid ($username)
 
-lookup the UID for a username
+return the UID for the given C<$username>
 
 =cut
 
@@ -76,9 +64,9 @@ sub get_uid {
     }
 }
 
-=item get_gid($groupname): int
+=func get_gid ($groupname)
 
-lookup the GID for a group name
+return the GID for the given C<$groupname>
 
 =cut
 
@@ -98,7 +86,7 @@ sub get_gid {
     }
 }
 
-=item make_path($path): void
+=func make_path ($path)
 
 create the given directory path if necessary, creating intermediate directories
 as necessary.  The final directory will be C<chown()>'ed as the user/group from
@@ -119,40 +107,6 @@ sub make_path {
         or die "chown($path): $!";
 }
 
-=back
-
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 AUTHOR
-
-Michael Schout E<lt>mschout@cpan.orgE<gt>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 Michael Schout.
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of either:
-
-=over 4
-
-=item *
-
-the GNU General Public License as published by the Free Software Foundation;
-either version 1, or (at your option) any later version, or
-
-=item *
-
-the Artistic License version 2.0.
-
-=back
-
-=cut
-
 1;
+
+__END__

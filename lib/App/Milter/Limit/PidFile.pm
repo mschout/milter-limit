@@ -1,18 +1,6 @@
-=head1 NAME
-
-App::Milter::Limit::PidFile - Pid file class
-
-=head1 SYNOPSIS
-
- die "already running" if App::Milter::Limit::PidFile->running;
-
-=head1 DESCRIPTION
-
-This class manages the milter limit PID file.
-
-=cut
-
 package App::Milter::Limit::PidFile;
+
+# ABSTRACT: Milter Limit Pid file class
 
 use strict;
 use File::Pid;
@@ -22,11 +10,7 @@ use App::Milter::Limit::Util;
 
 my $Pid;
 
-=head1 METHODS
-
-=over 4
-
-=item running()
+=method running
 
 If the program is running already, returns true.  Otherwise, returns false,
 and writes the pid file, and changes its permissions to the user/group
@@ -69,40 +53,14 @@ END {
     }
 }
 
-=back
-
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 AUTHOR
-
-Michael Schout E<lt>mschout@cpan.orgE<gt>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 Michael Schout.
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of either:
-
-=over 4
-
-=item *
-
-the GNU General Public License as published by the Free Software Foundation;
-either version 1, or (at your option) any later version, or
-
-=item *
-
-the Artistic License version 2.0.
-
-=back
-
-=cut
-
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+ die "already running" if App::Milter::Limit::PidFile->running;
+
+=head1 DESCRIPTION
+
+This class manages the milter limit PID file.

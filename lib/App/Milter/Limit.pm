@@ -1,25 +1,6 @@
-=head1 NAME
-
-App::Milter::Limit - Sendmail Milter that limits messages by sender
-
-=head1 SYNOPSIS
-
- my $config = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
- my $milter = App::Milter::Limit->instance('BerkeleyDB');
- $milter->register;
- $milter->main
-
-=head1 DESCRIPTION
-
-This milter limits the number of messages sent by SMTP envelope sender within a
-specified time period.  The number of messages and length of time in which the
-maximum number of messages can be sent is configurable in the configuration
-file.  Once the limit is reached, messages will be rejected from that sender
-until the time period has elapsed.
-
-=cut
-
 package App::Milter::Limit;
+
+# ABSTRACT: Sendmail Milter that limits message rate by sender
 
 use strict;
 use base qw(Class::Accessor Class::Singleton);
@@ -28,25 +9,18 @@ use Carp;
 use App::Milter::Limit::Config;
 use App::Milter::Limit::Log;
 use App::Milter::Limit::Util;
-use Sendmail::PMilter ':all';
+use Sendmail::PMilter 0.98;
 use Sys::Syslog ();
 
-our $VERSION = '0.10';
+Sendmail::PMilter->import(':all');
 
 __PACKAGE__->mk_accessors(qw(driver milter));
 
-=head1 CONSTRUCTOR
+=method instance($driver)
 
-=over 4
-
-=item instance($driver)
-
-This gets the milter object, constructing it if necessary.  C<$driver> is the
-name of the driver that you wish to use.  Currently only BerkelyDB is
-available, but additional drivers can be created by writing a plugin module.
-See C<App::Milter::Limit::Plugin::BerkeleyDB> for an example plugin.
-
-=back
+This gets the I<App::Milter::Limit> object, constructing it if necessary.
+C<$driver> is the name of the driver that you wish to use (e.g.: I<SQLite>,
+I<BerkeleyDB>).
 
 =cut
 
@@ -119,13 +93,7 @@ sub _init_driver {
     $self->driver($driver_class->instance);
 }
 
-=head1 METHODS
-
-The following methods are available
-
-=over 4
-
-=item register()
+=method register
 
 Registers the milter with sendmail and sets up the milter handlers.
 See L<Milter::PMilter::register()>.
@@ -166,7 +134,7 @@ sub _drop_privileges {
     }
 }
 
-=item main()
+=method main
 
 Main milter loop.
 
@@ -237,9 +205,9 @@ sub _envfrom_callback {
     }
 }
 
-=item App::Milter::Limit::Config config()
+=method config
 
-shortcut method to get the configuration object.
+get the App::Milter::Limit::Config instance
 
 =cut
 
@@ -248,40 +216,29 @@ sub config {
     App::Milter::Limit::Config->instance;
 }
 
-=back
-
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 AUTHOR
-
-Michael Schout E<lt>mschout@cpan.orgE<gt>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 Michael Schout.
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of either:
-
-=over 4
-
-=item *
-
-the GNU General Public License as published by the Free Software Foundation;
-either version 1, or (at your option) any later version, or
-
-=item *
-
-the Artistic License version 2.0.
-
-=back
-
-=cut
-
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+ my $config = App::Milter::Limit::Config->instance('/etc/mail/milter-limit.conf');
+ my $milter = App::Milter::Limit->instance('BerkeleyDB');
+ $milter->register;
+ $milter->main
+
+=head1 DESCRIPTION
+
+This is a milter framework that limits the number of messages sent by SMTP
+envelope sender within a specified time period.  The number of messages and
+length of time in which the maximum number of messages can be sent is
+configurable in the configuration file.  Once the limit is reached, messages
+will be rejected from that sender until the time period has elapsed.
+
+This module provides the interface for the milter.  A datastore plugin is also
+required to use this milter.  Datastores are available in the I<App::Milter::Limit::Plugin> namespace.
+
+=head1 SEE ALSO
+
+L<App::Milter::Limit::Plugin::BerkeleyDB>,
+L<App::Milter::Limit::Plugin::SQLite>
