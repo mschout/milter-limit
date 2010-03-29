@@ -10,7 +10,6 @@ my %conf = (
         'Class::Singleton'  => 0,
         'Config::Tiny'      => 0,
         'DBD::SQLite'       => 0,      # not sure what min version we need
-        'DBIx::Connector'   => 0,
         'File::Path'        => 2.00,
         'File::Pid'         => 0,
         'Pod::Usage'        => 0,

@@ -44,11 +44,11 @@ package Milter::Limit::Plugin::SQLite;
 use strict;
 use base qw(Milter::Limit::Plugin Class::Accessor);
 use DBI;
-use DBIx::Connector;
 use File::Spec;
+use Milter::Limit::Log;
 use Milter::Limit::Util;
 
-__PACKAGE__->mk_accessors(qw(_conn table));
+__PACKAGE__->mk_accessors(qw(_dbh table));
 
 sub init {
     my $self = shift;
@@ -81,24 +81,25 @@ sub db_file {
     return File::Spec->catfile($home, $file);
 }
 
-sub _dbh {
+sub new_dbh {
     my $self = shift;
 
-    return $self->_conn->dbh;
+    # setup connection to the database.
+    my $db_file = $self->db_file;
+
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$db_file", '', '', {
+        PrintError => 0,
+        AutoCommit => 1 })
+        or die "failed to initialize SQLite: $!";
+
+    return $dbh;
 }
 
 sub init_database {
     my $self = shift;
 
     # setup connection to the database.
-    my $db_file = $self->db_file;
-
-    my $conn = DBIx::Connector->new("dbi:SQLite:dbname=$db_file", '', '', {
-        PrintError => 0,
-        AutoCommit => 1 })
-        or die "failed to initialize SQLite: $!";
-
-    $self->_conn($conn);
+    $self->_dbh($self->new_dbh);
 
     unless ($self->table_exists($self->table)) {
         $self->create_table($self->table);
@@ -108,7 +109,30 @@ sub init_database {
     my $uid = $self->config_get('global', 'user');
     my $gid = $self->config_get('global', 'group');
 
+    my $db_file = $self->db_file;
     chown $uid, $gid, $db_file or die "chown($db_file): $!";
+}
+
+sub child_init {
+    my $self = shift;
+
+    debug("reopen db handle");
+
+    if (my $dbh = $self->_dbh) {
+        $dbh->disconnect;
+        $dbh = $self->new_dbh;
+        $self->_dbh($dbh);
+    }
+}
+
+sub child_exit {
+    my $self = shift;
+
+    debug("close db handle");
+
+    if (my $dbh = $self->_dbh) {
+        $dbh->disconnect;
+    }
 }
 
 sub query {
