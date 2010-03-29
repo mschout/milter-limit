@@ -181,9 +181,26 @@ sub main {
 
     my $conf = $self->config->global;
 
-    my $dispatcher = Sendmail::PMilter::prefork_dispatcher(
+    my %dispatch_args = (
         max_children           => $$conf{max_children} || 5,
-        max_requests_per_child => $$conf{max_requests_per_child} || 100);
+        max_requests_per_child => $$conf{max_requests_per_child} || 100
+    );
+
+    my $driver = $self->driver;
+
+    # add child_init hook if necessary
+    if ($driver->can('child_init')) {
+        debug("child_init hook registered");
+        $dispatch_args{child_init} = sub { $driver->child_init };
+    }
+
+    # add child_exit hook if necessary
+    if ($driver->can('child_exit')) {
+        debug("child_exit hook registered");
+        $dispatch_args{child_exit} = sub { $driver->child_exit };
+    }
+
+    my $dispatcher = Sendmail::PMilter::prefork_dispatcher(%dispatch_args);
 
     $milter->set_dispatcher($dispatcher);
 
