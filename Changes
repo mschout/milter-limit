@@ -1,6 +1,8 @@
 Revision history for App::Milter::Limit
 
 {{$NEXT}}
+
+0.51  2010-04-09
     - add weaver.ini for Pod::Weaver
     - use my @MSCHOUT pluginbundle
     - require File::Path 2.0
