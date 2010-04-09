@@ -10,7 +10,7 @@ This module provides utility functions for App::Milter::Limit.
 
 use strict;
 use POSIX qw(setsid);
-use File::Path ();
+use File::Path 2.0 ();
 use App::Milter::Limit::Config;
 
 =func daemonize
