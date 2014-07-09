@@ -196,13 +196,26 @@ sub _envfrom_callback {
 
     my $conf = $self->config->global;
 
+    my $reply = $$conf{reply} || 'reject';
+
     my $count = $self->driver->query($from);
     debug("$from [$count/$$conf{limit}]");
 
     if ($count > $$conf{limit}) {
-        info("$from exceeded message limit");
-        $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
-        return SMFIS_REJECT;
+        if ($reply eq 'defer') {
+            info("$from exceeded message limit, deferring");
+
+            $ctx->setreply(450, '4.7.1', 'Message limit exceeded');
+
+            return SMFIS_TEMPFAIL;
+        }
+        else {
+            info("$from exceeded message limit, rejecting");
+
+            $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
+
+            return SMFIS_REJECT;
+        }
     }
     else {
         return SMFIS_CONTINUE;
