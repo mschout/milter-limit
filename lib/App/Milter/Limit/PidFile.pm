@@ -3,7 +3,7 @@ $App::Milter::Limit::PidFile::VERSION = '0.52';
 # ABSTRACT: Milter Limit Pid file class
 
 use strict;
-use File::Pid;
+use Proc::PID::File;
 use App::Milter::Limit::Config;
 use App::Milter::Limit::Log;
 use App::Milter::Limit::Util;
@@ -18,31 +18,21 @@ sub running {
 
     App::Milter::Limit::Util::make_path($$conf{state_dir});
 
-    my $me = File::Pid->program_name;
+    $Pid = Proc::PID::File->new;
 
-    my $pid_file = "$$conf{state_dir}/$me.pid";
+    $Pid->file(dir => $$conf{state_dir});
 
-    $Pid = File::Pid->new({file => $pid_file});
-
-    if ($Pid->running) {
+    if ($Pid->alive) {
         $Pid = undef;
         return 1;
     }
 
-    $Pid->write;
+    $Pid->touch;
 
     # chown the file so we can unlink it
-    chown $$conf{user}, $$conf{group}, $Pid->file;
+    chown $$conf{user}, $$conf{group}, $Pid->{path};
 
     return 0;
-}
-
-# unlink the pid file when we exit.
-END {
-    if (defined $Pid) {
-        debug("removing pid file: ", $Pid->file);
-        $Pid->remove;
-    }
 }
 
 1;
