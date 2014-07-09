@@ -1,8 +1,5 @@
 package App::Milter::Limit::Plugin;
-BEGIN {
-  $App::Milter::Limit::Plugin::VERSION = '0.52';
-}
-
+$App::Milter::Limit::Plugin::VERSION = '0.52';
 # ABSTRACT: Milter Limit driver plugin base class
 
 use strict;
@@ -51,7 +48,7 @@ sub query {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -123,9 +120,19 @@ lookup a sender, and update the counters for it.  This is called when a message
 is seen for a sender.  Returns the number of messages seen for the sender in
 the configured expire time period.
 
+=head1 SOURCE
+
+The development version is on github at L<http://github.com/mschout/milter-limit>
+and may be cloned from L<git://github.com/mschout/milter-limit.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
+ http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
+
 =head1 AUTHOR
 
-  Michael Schout <mschout@cpan.org>
+Michael Schout <mschout@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -134,21 +141,4 @@ This software is copyright (c) 2010 by Michael Schout.
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
- http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
-
 =cut
-
-
-__END__
-

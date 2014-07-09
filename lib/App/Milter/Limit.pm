@@ -1,8 +1,5 @@
 package App::Milter::Limit;
-BEGIN {
-  $App::Milter::Limit::VERSION = '0.52';
-}
-
+$App::Milter::Limit::VERSION = '0.52';
 # ABSTRACT: Sendmail Milter that limits message rate by sender
 
 use strict;
@@ -175,13 +172,26 @@ sub _envfrom_callback {
 
     my $conf = $self->config->global;
 
+    my $reply = $$conf{reply} || 'reject';
+
     my $count = $self->driver->query($from);
     debug("$from [$count/$$conf{limit}]");
 
     if ($count > $$conf{limit}) {
-        info("$from exceeded message limit");
-        $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
-        return SMFIS_REJECT;
+        if ($reply eq 'defer') {
+            info("$from exceeded message limit, deferring");
+
+            $ctx->setreply(450, '4.7.1', 'Message limit exceeded');
+
+            return SMFIS_TEMPFAIL;
+        }
+        else {
+            info("$from exceeded message limit, rejecting");
+
+            $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
+
+            return SMFIS_REJECT;
+        }
     }
     else {
         return SMFIS_CONTINUE;
@@ -196,7 +206,7 @@ sub config {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -254,9 +264,19 @@ get the App::Milter::Limit::Config instance
 L<App::Milter::Limit::Plugin::BerkeleyDB>,
 L<App::Milter::Limit::Plugin::SQLite>
 
+=head1 SOURCE
+
+The development version is on github at L<http://github.com/mschout/milter-limit>
+and may be cloned from L<git://github.com/mschout/milter-limit.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
+ http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
+
 =head1 AUTHOR
 
-  Michael Schout <mschout@cpan.org>
+Michael Schout <mschout@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -265,21 +285,4 @@ This software is copyright (c) 2010 by Michael Schout.
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
- http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
-
 =cut
-
-
-__END__
-

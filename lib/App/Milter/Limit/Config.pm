@@ -1,8 +1,5 @@
 package App::Milter::Limit::Config;
-BEGIN {
-  $App::Milter::Limit::Config::VERSION = '0.52';
-}
-
+$App::Milter::Limit::Config::VERSION = '0.52';
 # ABSTRACT: Milter Limit configuration object
 
 use strict;
@@ -72,7 +69,7 @@ sub set_defaults {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -142,9 +139,19 @@ set plugin specific defaults.
 
 L<Config::Tiny>
 
+=head1 SOURCE
+
+The development version is on github at L<http://github.com/mschout/milter-limit>
+and may be cloned from L<git://github.com/mschout/milter-limit.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
+ http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
+
 =head1 AUTHOR
 
-  Michael Schout <mschout@cpan.org>
+Michael Schout <mschout@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -153,22 +160,4 @@ This software is copyright (c) 2010 by Michael Schout.
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
- http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
-
 =cut
-
-
-__END__
-
-

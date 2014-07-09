@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+#
+# PODNAME: milter-limit
+#
 
 use strict;
 use FindBin qw($RealBin);
@@ -41,9 +44,15 @@ sub main {
 
 __END__
 
+=pod
+
 =head1 NAME
 
-milter-limit - Rate limiting sendmail milter
+milter-limit
+
+=head1 VERSION
+
+version 0.52
 
 =head1 SYNOPSIS
 
@@ -52,6 +61,17 @@ milter-limit [options]
  Options:
    --debug                  debug mode
    --config filename        configuration file name
+
+=head1 DESCRIPTION
+
+B<milter-limit> is a sendmail milter for limiting the rate at which messages
+can be sent.  Currently the only supported mode of operation is to limit the
+number of messages by SMTP envelope sender.  More limiting options may be added
+later if demand exists for such features.
+
+=head1 NAME
+
+milter-limit - Rate limiting sendmail milter
 
 =head1 OPTIONS
 
@@ -67,13 +87,6 @@ Location of the milter-limit configuration file.
 
 =back
 
-=head1 DESCRIPTION
-
-B<milter-limit> is a sendmail milter for limiting the rate at which messages
-can be sent.  Currently the only supported mode of operation is to limit the
-number of messages by SMTP envelope sender.  More limiting options may be added
-later if demand exists for such features.
-
 =head1 AUTHOR
 
 Michael Schout <mschout@gkg.net>
@@ -85,5 +98,26 @@ Copyright (C) 2009 Michael Schout.  All rights reserved.
 This program is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself. The full text of this license can be found in
 the LICENSE file included with this program.
+
+=head1 SOURCE
+
+The development version is on github at L<http://github.com/mschout/milter-limit>
+and may be cloned from L<git://github.com/mschout/milter-limit.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
+ http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
+
+=head1 AUTHOR
+
+Michael Schout <mschout@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Michael Schout.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

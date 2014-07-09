@@ -1,8 +1,5 @@
 package App::Milter::Limit::Util;
-BEGIN {
-  $App::Milter::Limit::Util::VERSION = '0.52';
-}
-
+$App::Milter::Limit::Util::VERSION = '0.52';
 # ABSTRACT: utility functions for App::Milter::Limit
 
 
@@ -83,7 +80,7 @@ sub make_path {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -121,9 +118,19 @@ create the given directory path if necessary, creating intermediate directories
 as necessary.  The final directory will be C<chown()>'ed as the user/group from
 the config file.
 
+=head1 SOURCE
+
+The development version is on github at L<http://github.com/mschout/milter-limit>
+and may be cloned from L<git://github.com/mschout/milter-limit.git>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
+ http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
+
 =head1 AUTHOR
 
-  Michael Schout <mschout@cpan.org>
+Michael Schout <mschout@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -132,20 +139,4 @@ This software is copyright (c) 2010 by Michael Schout.
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 SOURCE
-
-You can contribute or fork this project via github:
-
-http://github.com/mschout/milter-limit
-
- git clone git://github.com/mschout/milter-limit.git
-
-=head1 BUGS
-
-Please report any bugs or feature requests to bug-app-milter-limit@rt.cpan.org or through the web interface at:
- http://rt.cpan.org/Public/Dist/Display.html?Name=App-Milter-Limit
-
 =cut
-
-
-__END__
