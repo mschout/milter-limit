@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+#
+# PODNAME: milter-limit
+#
 
 use strict;
 use FindBin qw($RealBin);
