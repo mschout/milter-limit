@@ -15,7 +15,7 @@
 . /etc/rc.subr
 
 name="milter_limit"
-rcvar=`set_rcvar`
+rcvar="${name}_enable"
 
 command="/usr/local/bin/milter-limit"
 

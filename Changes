@@ -5,6 +5,7 @@ Revision history for App::Milter::Limit
     - add 'reply' global configuration to change the milter response from
       SMFIS_REJECT to SMFIS_TEMPFAIL if desired
     - replace broken File::Pid dependency with Proc::PID::File
+    - fix freebsd init script for FreeBSD 10
 
 0.51  2010-04-09
     - add weaver.ini for Pod::Weaver
