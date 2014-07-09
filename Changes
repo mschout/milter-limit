@@ -1,6 +1,7 @@
 Revision history for App::Milter::Limit
 
 {{$NEXT}}
+    - add systemd init script for fedora/RHEL7 [Javier Wilson]
 
 0.51  2010-04-09
     - add weaver.ini for Pod::Weaver
