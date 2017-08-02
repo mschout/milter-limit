@@ -3,7 +3,9 @@ package App::Milter::Limit::Plugin;
 # ABSTRACT: Milter Limit driver plugin base class
 
 use strict;
+use warnings;
 use base 'Class::Singleton';
+
 use App::Milter::Limit::Config;
 
 sub _new_instance {

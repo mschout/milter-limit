@@ -3,6 +3,8 @@ package App::Milter::Limit;
 # ABSTRACT: Sendmail Milter that limits message rate by sender
 
 use strict;
+use warnings;
+
 use base qw(Class::Accessor Class::Singleton);
 
 use Carp;

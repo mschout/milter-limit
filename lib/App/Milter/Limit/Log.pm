@@ -3,6 +3,8 @@ package App::Milter::Limit::Log;
 # ABSTRACT: logging functions for App::Milter::Limit
 
 use strict;
+use warnings;
+
 use base 'Exporter';
 use Sys::Syslog ();
 

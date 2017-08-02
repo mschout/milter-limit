@@ -9,6 +9,8 @@ This module provides utility functions for App::Milter::Limit.
 =cut
 
 use strict;
+use warnings;
+
 use POSIX qw(setsid);
 use File::Path 2.0 ();
 use App::Milter::Limit::Config;

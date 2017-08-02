@@ -3,6 +3,8 @@ package App::Milter::Limit::Config;
 # ABSTRACT: Milter Limit configuration object
 
 use strict;
+use warnings;
+
 use base qw(Class::Singleton Class::Accessor);
 use Config::Tiny;
 
@@ -40,6 +42,8 @@ sub _new_instance {
 
 sub init {
     my $self = shift;
+
+    no warnings 'uninitialized';
 
     my $conf = $self->global;
     if (my $user = $$conf{user}) {

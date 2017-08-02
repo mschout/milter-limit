@@ -3,6 +3,8 @@ package App::Milter::Limit::PidFile;
 # ABSTRACT: Milter Limit Pid file class
 
 use strict;
+use warnings;
+
 use Proc::PID::File;
 use App::Milter::Limit::Config;
 use App::Milter::Limit::Log;
