@@ -113,8 +113,14 @@ sub register {
 
     my $conf = $self->config->global;
 
-    $milter->auto_setconn($$conf{name})
-        or croak "auto_setconn failed";
+    if ($$conf{connection}) {
+        $milter->setconn($$conf{connection});
+    }
+    else {
+        # figure out the connection from sendmail
+        $milter->auto_setconn($$conf{name})
+            or croak "auto_setconn failed";
+    }
 
     my %callbacks = (
         envfrom => \&_envfrom_callback
