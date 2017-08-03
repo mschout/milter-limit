@@ -105,8 +105,10 @@ sub make_path {
 
     my $conf = App::Milter::Limit::Config->global;
 
-    chown $$conf{user}, $$conf{group}, $path
-        or die "chown($path): $!";
+    if (defined @$conf{qw(user group)}) {
+        chown $$conf{user}, $$conf{group}, $path
+            or die "chown($path): $!";
+    }
 }
 
 1;
