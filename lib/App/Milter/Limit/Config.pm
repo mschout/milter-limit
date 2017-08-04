@@ -135,8 +135,6 @@ C<App::Milter::Limit::Config> is holds the configuration data for milter-limit. 
 configuration data is read from an ini-style config file as a C<Config::Tiny>
 object.
 
-=cut
-
 =head1 SEE ALSO
 
 L<Config::Tiny>
