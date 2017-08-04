@@ -192,6 +192,18 @@ sub main {
 sub _envfrom_callback {
     my ($ctx, $from) = @_;
 
+    my $self = __PACKAGE__->instance();
+
+    my $conf = $self->config->global;
+
+    if (defined $$conf{limit_from}) {
+        my $val = $ctx->getsymval($$conf{limit_from});
+        if (defined $val) {
+            debug("overriding From value with $val");
+            $from = $val;
+        }
+    }
+
     # strip angle brackets
     $from =~ s/(?:^\<)|(?:\>$)//g;
 
@@ -199,10 +211,6 @@ sub _envfrom_callback {
     unless (length $from) {
         return SMFIS_CONTINUE;
     }
-
-    my $self = __PACKAGE__->instance();
-
-    my $conf = $self->config->global;
 
     my $reply = $$conf{reply} || 'reject';
 
