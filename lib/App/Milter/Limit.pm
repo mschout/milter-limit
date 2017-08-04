@@ -271,7 +271,8 @@ configurable in the configuration file.  Once the limit is reached, messages
 will be rejected from that sender until the time period has elapsed.
 
 This module provides the interface for the milter.  A datastore plugin is also
-required to use this milter.  Datastores are available in the I<App::Milter::Limit::Plugin> namespace.
+required to use this milter.  Datastores are available in the
+I<App::Milter::Limit::Plugin> namespace.
 
 =head1 SEE ALSO
 
