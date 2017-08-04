@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit::PidFile;
 
 # ABSTRACT: Milter Limit Pid file class

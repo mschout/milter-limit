@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit;
 
 # ABSTRACT: Sendmail Milter that limits message rate by sender

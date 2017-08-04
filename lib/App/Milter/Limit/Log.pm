@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit::Log;
 
 # ABSTRACT: logging functions for App::Milter::Limit

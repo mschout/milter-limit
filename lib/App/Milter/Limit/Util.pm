@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit::Util;
 
 # ABSTRACT: utility functions for App::Milter::Limit

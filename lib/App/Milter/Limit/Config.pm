@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit::Config;
 
 # ABSTRACT: Milter Limit configuration object

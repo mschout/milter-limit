@@ -1,3 +1,5 @@
+# COPYRIGHT
+
 package App::Milter::Limit::Plugin;
 
 # ABSTRACT: Milter Limit driver plugin base class
