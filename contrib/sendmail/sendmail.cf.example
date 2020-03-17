@@ -1,0 +1,5 @@
+# If you are not actually using milter-limit for sendmail, you
+# need this file so that milter-limit knows about the domain
+# socket settings.
+#
+Xmilter-limit, S=unix:/var/spool/postfix/milter-limit.sock

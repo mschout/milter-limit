@@ -107,9 +107,12 @@ sub register {
         $milter->setconn($$conf{connection});
     }
     else {
+	my $path = $milter->auto_getconn($$conf{name});
         # figure out the connection from sendmail
-        $milter->auto_setconn($$conf{name})
+	$milter->setconn($path)
             or croak "auto_setconn failed";
+        chown $$conf{user}, $$conf{group}, substr($path,5)
+        or die "chown(substr($path,5)): $!";
     }
 
     my %callbacks = (
