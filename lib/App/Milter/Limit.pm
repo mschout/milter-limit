@@ -120,8 +120,16 @@ sub register {
     }
     else {
         # figure out the connection from sendmail
-        $milter->auto_setconn($$conf{name})
+        my $path = $milter->auto_getconn($$conf{name});
+        $milter->setconn($path)
             or croak "auto_setconn failed";
+
+        # get the socket's file name without local: or unix:
+        $path = substr($path,index($path, ':')+1);
+
+        # make sure the permissions are correct
+        chown $$conf{user}, $$conf{group}, $path
+            or die "chown($path): $!";
     }
 
     my %callbacks = (
@@ -215,6 +223,13 @@ sub _envfrom_callback {
     }
 
     my $reply = $$conf{reply} || 'reject';
+    my $message = $$conf{message} || 'Message limit exceeded';
+    my $ignore = $$conf{ignore} || '';
+
+    if (index(','.$ignore.',', ','.$from.',') != -1) {
+        info("$from found in ignore list, continuing");
+        return SMFIS_CONTINUE;
+    }
 
     my $count = $self->driver->query($from);
     debug("$from [$count/$$conf{limit}]");
@@ -223,14 +238,14 @@ sub _envfrom_callback {
         if ($reply eq 'defer') {
             info("$from exceeded message limit, deferring");
 
-            $ctx->setreply(450, '4.7.1', 'Message limit exceeded');
+            $ctx->setreply(450, '4.7.1', $message);
 
             return SMFIS_TEMPFAIL;
         }
         else {
             info("$from exceeded message limit, rejecting");
 
-            $ctx->setreply(550, '5.7.1', 'Message limit exceeded');
+            $ctx->setreply(550, '5.7.1', $message);
 
             return SMFIS_REJECT;
         }
