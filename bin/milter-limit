@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-#
+# ABSTRACT: Rate limiting sendmail milter
 # PODNAME: milter-limit
 #
 
