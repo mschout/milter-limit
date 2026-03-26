@@ -1,0 +1,71 @@
+---
+abstract: 'Sendmail Milter that limits message rate by sender'
+author:
+  - 'Michael Schout <mschout@cpan.org>'
+build_requires:
+  Data::Section: '0'
+  Fatal: '0'
+  Net::Milter: '0'
+  Path::Tiny: '0'
+  Test::Builder::Module: '0'
+  Test::More: '0'
+  Test::Warnings: '0'
+  Text::Template: '0'
+  Time::HiRes: '0'
+  perl: '5.006'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+  perl: '5.006'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 6.037, CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: App-Milter-Limit
+provides:
+  App::Milter::Limit:
+    file: lib/App/Milter/Limit.pm
+    version: '0.54'
+  App::Milter::Limit::Config:
+    file: lib/App/Milter/Limit/Config.pm
+    version: '0.54'
+  App::Milter::Limit::Log:
+    file: lib/App/Milter/Limit/Log.pm
+    version: '0.54'
+  App::Milter::Limit::PidFile:
+    file: lib/App/Milter/Limit/PidFile.pm
+    version: '0.54'
+  App::Milter::Limit::Plugin:
+    file: lib/App/Milter/Limit/Plugin.pm
+    version: '0.54'
+  App::Milter::Limit::Util:
+    file: lib/App/Milter/Limit/Util.pm
+    version: '0.54'
+requires:
+  Carp: '0'
+  Class::Accessor: '0'
+  Class::Singleton: '0'
+  Config::Tiny: '0'
+  Exporter: '0'
+  File::Path: '2.0'
+  FindBin: '0'
+  Getopt::Long: '0'
+  POSIX: '0'
+  Pod::Usage: '0'
+  Proc::PID::File: '0'
+  Sendmail::PMilter: '0.98'
+  Sys::Syslog: '0'
+  base: '0'
+  lib: '0'
+  perl: '5.006'
+  strict: '0'
+  warnings: '0'
+resources:
+  bugtracker: https://github.com/mschout/milter-limit/issues
+  homepage: https://github.com/mschout/milter-limit
+  repository: https://github.com/mschout/milter-limit.git
+version: '0.54'
+x_generated_by_perl: v5.42.0
+x_serialization_backend: 'YAML::Tiny version 1.76'
+x_spdx_expression: 'Artistic-1.0-Perl OR GPL-1.0-or-later'
