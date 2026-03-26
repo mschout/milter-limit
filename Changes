@@ -1,6 +1,8 @@
 Revision history for App::Milter::Limit
 
 {{$NEXT}}
+
+0.54  2026-03-26
     - Add sysv init script to contrib
     - Add systemd init script
     - Add config option `message` to send a user-defined defer/reject message
